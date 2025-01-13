@@ -1,6 +1,6 @@
 #include "stackmq.h"
+#include "base64.h"
 #include <ArduinoJson.h> // Include ArduinoJson for JSON parsing
-#include "arduino_base64.hpp" // https://github.com/dojyorin/arduino_base64, 2.0.4
 
 Stackmq* _instance = nullptr; // Singleton instance for static callback
 
