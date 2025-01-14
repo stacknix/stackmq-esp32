@@ -8,7 +8,7 @@ Stackmq::Stackmq() : _mqttClient(_secureClient) {
     _instance = this; // Assign this instance to the global pointer
 }
 
-void Stackmq::begin(const char* ssid, const char* password, const String& jwtToken, void (*callback)(String)) {
+void Stackmq::setup(const char* ssid, const char* password, const String& jwtToken, void (*callback)(String)) {
     _ssid = ssid;
     _password = password;
     _userCallback = callback;

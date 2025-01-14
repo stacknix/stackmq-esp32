@@ -4,23 +4,23 @@
 Stackble::Stackble()
     : pServer(nullptr), pCharacteristic(nullptr), deviceConnected(false), messageCallback(nullptr) {}
 
-void Stackble::setup(const std::string &deviceName, const std::string &serviceUUID, const std::string &characteristicUUID, std::string (*callback)(const std::string &message)) {
+void Stackble::setup(const String &deviceName, const String &serviceUUID, const String &characteristicUUID, String (*callback)(String message)) {
     // Set the user-defined callback
     messageCallback = callback;
 
     // Initialize BLE
-    BLEDevice::init(deviceName);
+    BLEDevice::init(deviceName.c_str());
 
     // Create BLE server
     pServer = BLEDevice::createServer();
     pServer->setCallbacks(new ServerCallbacks(this));
 
     // Create BLE service
-    BLEService *pService = pServer->createService(serviceUUID);
+    BLEService *pService = pServer->createService(serviceUUID.c_str());
 
     // Create BLE characteristic
     pCharacteristic = pService->createCharacteristic(
-        characteristicUUID,
+        characteristicUUID.c_str(),
         BLECharacteristic::PROPERTY_READ |
         BLECharacteristic::PROPERTY_WRITE |
         BLECharacteristic::PROPERTY_NOTIFY
@@ -40,21 +40,21 @@ void Stackble::setup(const std::string &deviceName, const std::string &serviceUU
     Serial.println("BLE advertising started...");
 }
 
-void Stackble::response(const std::string &response) {
+void Stackble::response(const String &response) {
     if (deviceConnected) {
-        pCharacteristic->setValue(response);
+        pCharacteristic->setValue(response.c_str());
         pCharacteristic->notify();
-        Serial.println(response.c_str());  // Fixed
+        Serial.println(response);
     } else {
         Serial.println("No device connected to send response.");
     }
 }
 
-void Stackble::notify(const std::string &notification) {
+void Stackble::notify(const String &notification) {
     if (deviceConnected) {
-        pCharacteristic->setValue(notification);
+        pCharacteristic->setValue(notification.c_str());
         pCharacteristic->notify();
-        Serial.println(notification.c_str());  // Fixed
+        Serial.println(notification);
     } else {
         Serial.println("No device connected to send notification.");
     }
@@ -77,13 +77,13 @@ void Stackble::ServerCallbacks::onDisconnect(BLEServer *pServer) {
 
 // BLE Characteristic Callbacks
 void Stackble::CharacteristicCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
-    std::string receivedData = pCharacteristic->getValue();
+    String receivedData = pCharacteristic->getValue().c_str();
     Serial.print("Message received: ");
-    Serial.println(receivedData.c_str());  // Fixed
+    Serial.println(receivedData);
 
     // Trigger the user-defined callback if set
     if (handler->messageCallback) {
-        std::string response = handler->messageCallback(receivedData);
+        String response = handler->messageCallback(receivedData);
         handler->response(response);
     }
 }

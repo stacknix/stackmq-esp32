@@ -9,7 +9,7 @@ class Stackmq {
 public:
     Stackmq();
 
-    void begin(const char* ssid, const char* password, const String& jwtToken, void (*callback)(String));
+    void setup(const char* ssid, const char* password, const String& jwtToken, void (*callback)(String));
     void loop();
 
 private:
